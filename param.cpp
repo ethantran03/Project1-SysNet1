@@ -26,3 +26,18 @@ void Param::printParams() const {
     }
     std::cout << std::endl;
 }
+
+const char* Param::getInputRedirect() const { return inputRedirect; }
+void Param::setInputRedirect(const char* input) { inputRedirect = strdup(input); }
+
+const char* Param::getOutputRedirect() const { return outputRedirect; }
+void Param::setOutputRedirect(const char* output) { outputRedirect = strdup(output); }
+
+int Param::getBackground() const { return background; }
+void Param::setBackground(int bg) { background = bg; }
+
+int Param::getArgumentCount() const { return argumentCount; }
+void Param::setArgumentCount(int count) { argumentCount = count; }
+
+const char* Param::getArgument(int index) const { return argumentVector[index]; }
+void Param::setArgument(int index, const char* arg) { argumentVector[index] = strdup(arg); }
