@@ -3,6 +3,7 @@
 #include "parse.hpp"
 #include <iostream>
 #include <cstring>
+#include <string>
 
 bool debugMode = false;
 
