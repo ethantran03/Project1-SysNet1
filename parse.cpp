@@ -1,30 +1,30 @@
+// parse.cpp
 #include "parse.hpp"
+#include "param.hpp"
 #include <cstring>
 #include <cctype>
-#include <cstdlib>
-#include <iostream>
+#include <sstream>
 
-void parseInput(const char *input, Param &param) {
-    char buffer[1024];
-    strcpy(buffer, input);
+void parseInput(const char* input, Param& param) {
+    // Tokenize input string
+    std::istringstream iss(input);
+    std::string token;
+    int argCount = 0;
 
-    char *token = strtok(buffer, " \t\n");
-    while (token != nullptr) {
-        if (strcmp(token, "<") == 0) {
-            token = strtok(nullptr, " \t\n");
-            if (token) {
-                param.setInputRedirect(token);
-            }
-        } else if (strcmp(token, ">") == 0) {
-            token = strtok(nullptr, " \t\n");
-            if (token) {
-                param.setOutputRedirect(token);
-            }
-        } else if (strcmp(token, "&") == 0) {
-            param.setBackground(1);
+    while (iss >> token) {
+        if (token[0] == '<') {
+            param.inputRedirect = strdup(token.substr(1).c_str());
+        } else if (token[0] == '>') {
+            param.outputRedirect = strdup(token.substr(1).c_str());
+        } else if (token == "&") {
+            param.background = 1;
         } else {
-            param.addArgument(token);
+            if (argCount < MAXARGS) {
+                param.argumentVector[argCount] = strdup(token.c_str());
+                argCount++;
+            }
         }
-        token = strtok(nullptr, " \t\n");
     }
+
+    param.argumentCount = argCount;
 }
