@@ -13,18 +13,18 @@ void parseInput(const char* input, Param& param) {
 
     while (iss >> token) {
         if (token[0] == '<') {
-            param.inputRedirect = strdup(token.substr(1).c_str());
+            param.setInputRedirect(token.substr(1).c_str());
         } else if (token[0] == '>') {
-            param.outputRedirect = strdup(token.substr(1).c_str());
+            param.setOutputRedirect(token.substr(1).c_str());
         } else if (token == "&") {
-            param.background = 1;
+            param.setBackground(1);
         } else {
             if (argCount < MAXARGS) {
-                param.argumentVector[argCount] = strdup(token.c_str());
+                param.setArgument(argCount, token.c_str());
                 argCount++;
             }
         }
     }
 
-    param.argumentCount = argCount;
+    param.setArgumentCount(argCount);
 }
