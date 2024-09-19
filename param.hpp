@@ -1,43 +1,31 @@
-// param.hpp
 #ifndef PARAM_HPP
 #define PARAM_HPP
 
 #define MAXARGS 32
 
-class Param
-{
+class Param {
 private:
-    char *inputRedirect;    // File name for input redirection or NULL
-    char *outputRedirect;   // File name for output redirection or NULL
-    int background;         // 0 for foreground, 1 for background
-    int argumentCount;      // Number of tokens in argument vector
-    char *argumentVector[MAXARGS]; // Array of tokens (arguments)
+    char* inputRedirect;       // file name or NULL
+    char* outputRedirect;      // file name or NULL
+    int background;            // 0 (false) or 1 (true)
+    int argumentCount;         // number of tokens in argument vector
+    char* argumentVector[MAXARGS];  // array of argument strings
 
 public:
-    // Constructor
-    Param();
+    Param();                   // Constructor
+    ~Param();                  // Destructor
+    void printParams() const;  // Debug print method
+    void setInputRedirect(const char* input);  // Set input redirection file
+    void setOutputRedirect(const char* output);  // Set output redirection file
+    void setBackground(bool bg);   // Set background flag
+    void addArgument(const char* arg);  // Add argument to argumentVector
+    void clear();                // Clear all parameters for next command
 
-    // Destructor
-    ~Param();
-
-    // Print the parameters for debugging
-    void printParams() const;
-
-    // Getters and setters
-    const char* getInputRedirect() const;
-    void setInputRedirect(const char* input);
-
-    const char* getOutputRedirect() const;
-    void setOutputRedirect(const char* output);
-
-    int getBackground() const;
-    void setBackground(int bg);
-
+    char* getInputRedirect() const;
+    char* getOutputRedirect() const;
+    int isBackground() const;
     int getArgumentCount() const;
-    void setArgumentCount(int count);
-
-    const char* getArgument(int index) const;
-    void setArgument(int index, const char* arg);
+    char** getArgumentVector();
 };
 
-#endif // PARAM_HPP
+#endif
