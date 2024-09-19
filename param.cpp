@@ -1,43 +1,111 @@
-// param.cpp
 #include "param.hpp"
 #include <iostream>
 #include <cstring>
-#include <cstdlib>
 
-Param::Param() : inputRedirect(NULL), outputRedirect(NULL), background(0), argumentCount(0) {
-    memset(argumentVector, 0, sizeof(argumentVector));
+Param::Param() {
+    inputRedirect = nullptr;
+    outputRedirect = nullptr;
+    background = 0;
+    argumentCount = 0;
+    // Initialize argumentVector to nullptr to avoid garbage values
+    for (int i = 0; i < MAXARGS; ++i) {
+        argumentVector[i] = nullptr;
+    }
 }
 
 Param::~Param() {
-    if (inputRedirect) free(inputRedirect);
-    if (outputRedirect) free(outputRedirect);
+    // Free dynamically allocated memory
     for (int i = 0; i < argumentCount; ++i) {
-        free(argumentVector[i]);
+        delete[] argumentVector[i];
     }
+    if (inputRedirect) {
+        delete[] inputRedirect;
+    }
+    if (outputRedirect) {
+        delete[] outputRedirect;
+    }
+}
+
+void Param::setInputRedirect(const char* input) {
+    if (inputRedirect) {
+        delete[] inputRedirect;
+    }
+    inputRedirect = new char[strlen(input) + 1];
+    strcpy(inputRedirect, input);
+}
+
+void Param::setOutputRedirect(const char* output) {
+    if (outputRedirect) {
+        delete[] outputRedirect;
+    }
+    outputRedirect = new char[strlen(output) + 1];
+    strcpy(outputRedirect, output);
+}
+
+void Param::setBackground(bool bg) {
+    background = bg ? 1 : 0;
+}
+
+void Param::addArgument(const char* arg) {
+    if (argumentCount < MAXARGS) {
+        argumentVector[argumentCount] = new char[strlen(arg) + 1];
+        strcpy(argumentVector[argumentCount], arg);
+        ++argumentCount;
+    } else {
+        std::cerr << "Error: Too many arguments (max " << MAXARGS << ")\n";
+    }
+}
+
+char* Param::getInputRedirect() const {
+    return inputRedirect;
+}
+
+char* Param::getOutputRedirect() const {
+    return outputRedirect;
+}
+
+int Param::isBackground() const {
+    return background;
+}
+
+int Param::getArgumentCount() const {
+    return argumentCount;
+}
+
+char** Param::getArgumentVector() {
+    return argumentVector;
+}
+
+void Param::clear() {
+    for (int i = 0; i < argumentCount; ++i) {
+        delete[] argumentVector[i];
+        argumentVector[i] = nullptr;
+    }
+    argumentCount = 0;
+
+    if (inputRedirect) {
+        delete[] inputRedirect;
+        inputRedirect = nullptr;
+    }
+    if (outputRedirect) {
+        delete[] outputRedirect;
+        outputRedirect = nullptr;
+    }
+
+    background = 0;
 }
 
 void Param::printParams() const {
-    std::cout << "Input Redirect: " << (inputRedirect ? inputRedirect : "None") << std::endl;
-    std::cout << "Output Redirect: " << (outputRedirect ? outputRedirect : "None") << std::endl;
-    std::cout << "Background: " << background << std::endl;
-    std::cout << "Arguments: ";
+    std::cout << "Arguments (" << argumentCount << "):\n";
     for (int i = 0; i < argumentCount; ++i) {
-        std::cout << argumentVector[i] << " ";
+        std::cout << "arg[" << i << "] = " << argumentVector[i] << std::endl;
     }
-    std::cout << std::endl;
+
+    if (inputRedirect) {
+        std::cout << "Input redirect: " << inputRedirect << std::endl;
+    }
+    if (outputRedirect) {
+        std::cout << "Output redirect: " << outputRedirect << std::endl;
+    }
+    std::cout << "Background: " << (background ? "true" : "false") << std::endl;
 }
-
-const char* Param::getInputRedirect() const { return inputRedirect; }
-void Param::setInputRedirect(const char* input) { inputRedirect = strdup(input); }
-
-const char* Param::getOutputRedirect() const { return outputRedirect; }
-void Param::setOutputRedirect(const char* output) { outputRedirect = strdup(output); }
-
-int Param::getBackground() const { return background; }
-void Param::setBackground(int bg) { background = bg; }
-
-int Param::getArgumentCount() const { return argumentCount; }
-void Param::setArgumentCount(int count) { argumentCount = count; }
-
-const char* Param::getArgument(int index) const { return argumentVector[index]; }
-void Param::setArgument(int index, const char* arg) { argumentVector[index] = strdup(arg); }
