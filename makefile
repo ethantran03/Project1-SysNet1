@@ -1,19 +1,17 @@
 CXX = g++
-CXXFLAGS = -g -Wall
+CXXFLAGS = -Wall -g
 
-all: myshell
+myshell: myshell.o param.o parse.o
+	$(CXX) $(CXXFLAGS) -o myshell myshell.o param.o parse.o
 
-myshell: myshell.o parse.o param.o
-	$(CXX) $(CXXFLAGS) -o myshell myshell.o parse.o param.o
-
-myshell.o: myshell.cpp parse.hpp param.hpp
+myshell.o: myshell.cpp param.hpp parse.hpp
 	$(CXX) $(CXXFLAGS) -c myshell.cpp
-
-parse.o: parse.cpp parse.hpp
-	$(CXX) $(CXXFLAGS) -c parse.cpp
 
 param.o: param.cpp param.hpp
 	$(CXX) $(CXXFLAGS) -c param.cpp
 
+parse.o: parse.cpp param.hpp parse.hpp
+	$(CXX) $(CXXFLAGS) -c parse.cpp
+
 clean:
-	rm -f *.o myshell
+	rm -f myshell *.o
