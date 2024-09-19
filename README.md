@@ -15,3 +15,10 @@ A project that implement a shell with basic abilites to parse user commands, com
 - Can run debug mode in the shell with "./myshell -Debug"
 - Run the shell without debug with "./myshell"
 - Can exit the shell by typing "exit" (will wait for background processes to finish before exiting)
+
+#### Some command to use to test the shell
+- Can use the command "ls -1" to look at the files inside of the shell
+- Use the command "ls -1 > outputfile.txt" to create a file in the shell call "outputfile.txt"
+- Can use the command "./slow &" to run process in the background and return the pid of the process
+- Can use the function "cat" following "<" and a file you want to show to shows the .cpp file in the shell
+- If you run the command "./myshell -Debug" you can run it in debuging mode and next push the command "ls -1" it'll show you the argument amount and to see if there is a background running
