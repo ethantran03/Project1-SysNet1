@@ -1,30 +1,42 @@
-// parse.cpp
 #include "parse.hpp"
-#include "param.hpp"
 #include <cstring>
-#include <cctype>
-#include <sstream>
+#include <iostream>
 
 void parseInput(const char* input, Param& param) {
-    // Tokenize input string
-    std::istringstream iss(input);
-    std::string token;
-    int argCount = 0;
+    param.clear();  // Reset the parameters before parsing
 
-    while (iss >> token) {
-        if (token[0] == '<') {
-            param.setInputRedirect(token.substr(1).c_str());
-        } else if (token[0] == '>') {
-            param.setOutputRedirect(token.substr(1).c_str());
-        } else if (token == "&") {
-            param.setBackground(1);
-        } else {
-            if (argCount < MAXARGS) {
-                param.setArgument(argCount, token.c_str());
-                argCount++;
+    const char* delim = " \t\n";  // Delimiters: spaces, tabs, newlines
+    char* token = strtok(const_cast<char*>(input), delim);
+
+    while (token != nullptr) {
+        if (strcmp(token, "<") == 0) {
+            // Input redirection
+            token = strtok(nullptr, delim);
+            if (token != nullptr) {
+                param.setInputRedirect(token);
+            } else {
+                std::cerr << "Error: No input file specified.\n";
             }
+        } else if (strcmp(token, ">") == 0) {
+            // Output redirection
+            token = strtok(nullptr, delim);
+            if (token != nullptr) {
+                param.setOutputRedirect(token);
+            } else {
+                std::cerr << "Error: No output file specified.\n";
+            }
+        } else if (strcmp(token, "&") == 0) {
+            // Background execution
+            param.setBackground(true);
+        } else {
+            // Regular argument
+            param.addArgument(token);
         }
+
+        // Get the next token
+        token = strtok(nullptr, delim);
     }
 
-    param.setArgumentCount(argCount);
+    // Ensure the argument vector ends with a NULL pointer (required by execvp)
+    param.getArgumentVector()[param.getArgumentCount()] = nullptr;
 }
